@@ -1,26 +1,18 @@
-mod utilities;
+pub mod utilities;
 pub(crate) mod error;
 mod command;
+use anyhow::{Result, Context};
 
-use std::io::{self, Write};
-use std::process;
-
-use anyhow::Result;
-
-use crate::{command::Command, error::CustomError, utilities::{get_input, print_error}};
+use crate::{command::Command, error::CustomError, utilities::{exit, get_command, print_error, print_prompt}};
 
 pub fn run() -> Result<()> {
     loop {
-        print!("ᯓ★ ");
-
-        io::stdout().flush().unwrap();
-
-        let user_input: String = get_input()?;
-        let command = Command::from(user_input.as_str());
+        print_prompt();        
         
+        let command = get_command().context("getting command")?;
         
         match command {
-            Command::Exit => process::exit(0),
+            Command::Exit => exit(0),
             Command::NotFound(command_string) => {
                 let error_message = CustomError::CommandNotFound(command_string);
                 print_error(error_message);
