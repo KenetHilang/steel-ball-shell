@@ -1,9 +1,11 @@
 pub mod utilities;
-pub(crate) mod error;
+pub mod error;
 mod command;
+pub mod echo;
 use anyhow::{Result, Context};
 
-use crate::{command::Command, error::CustomError, utilities::{exit, get_command, print_error, print_prompt}};
+use echo::echo;
+use crate::{command::Command, error::CustomError, utilities::{get_command, print_error, print_prompt}};
 
 pub fn run() -> Result<()> {
     loop {
@@ -12,7 +14,8 @@ pub fn run() -> Result<()> {
         let command = get_command().context("getting command")?;
         
         match command {
-            Command::Exit => exit(0),
+            Command::Echo(command) => echo(command),
+            Command::Exit => break,
             Command::NotFound(command_string) => {
                 let error_message = CustomError::CommandNotFound(command_string);
                 print_error(error_message);
@@ -20,6 +23,5 @@ pub fn run() -> Result<()> {
         }
     }
 
-    #[allow(unreachable_code)]
     Ok(())
 }
