@@ -1,7 +1,7 @@
 pub use std::process::exit;
 use std::{io::{self, Write}, fmt::Display};
 use anyhow::{Context, Ok, Result};
-use crate::command::{Command};
+use crate::commands::{Command};
 
 pub fn print_prompt() {
     print!("ᯓ★ ");
@@ -9,7 +9,7 @@ pub fn print_prompt() {
 }
 
 pub fn get_input() -> Result<String> {
-    let mut user_input: String = String::new();
+    let mut user_input = String::new();
     io::stdin().read_line(&mut user_input).context("Reading User Input")?;
     Ok(user_input.trim().to_owned())
 }
